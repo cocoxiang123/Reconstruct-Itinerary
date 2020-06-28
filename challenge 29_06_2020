@@ -1,0 +1,56 @@
+Given a list of airline tickets represented by pairs of departure and arrival airports [from, to], reconstruct the itinerary in order. All of the tickets belong to a man who departs from JFK. Thus, the itinerary must begin with JFK.
+
+Note:
+
+If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string. For example, the itinerary ["JFK", "LGA"] has a smaller lexical order than ["JFK", "LGB"].
+All airports are represented by three capital letters (IATA code).
+You may assume all tickets form at least one valid itinerary.
+One must use all the tickets once and only once.
+Example 1:
+
+Input: [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
+Output: ["JFK", "MUC", "LHR", "SFO", "SJC"]
+Example 2:
+
+Input: [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+Explanation: Another possible reconstruction is ["JFK","SFO","ATL","JFK","ATL","SFO"].
+             But it is larger in lexical order.
+solution:
+/**
+ * @param {string[][]} tickets
+ * @return {string[]}
+ */
+    var findItinerary = function (tickets) {
+        //tickets to array "from" and 'to'
+        var output = new Array(tickets.length + 1).fill(0);
+        var start = '';
+        var end = '';
+        var hash = {};
+
+        //find start depart
+        tickets.forEach(x => {
+            hash[x[0]] ? hash[x[0]]++ : hash[x[0]] = 1;
+            hash[x[1]] ? hash[x[1]]-- : hash[x[1]] = -1;
+        }
+        )
+        for (const x in hash) {
+            if (hash[x] == 1) {
+                start = x;
+            }
+        }
+        //put targets into output
+        output[0] = start;
+        var temp = [...tickets];
+        for (j = 1; j < output.length; j++) {
+            for (var i = 0; i < temp.length; i++) {
+                if (temp[i][0] == output[j - 1]) {
+                    output[j] = temp[i][1];
+                    temp.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        return output;
+    };
